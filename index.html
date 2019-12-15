@@ -1,0 +1,218 @@
+<head>
+ <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+<style>
+input, p{ margin:1em; display:inline;}
+body{background-color:violet;}
+#checkboxvalues{display:none;}
+</style>
+<head>
+<body>
+
+
+<div class="form-group" id="container">
+  <label for="sel1">Select Category:</label>
+  <select class="form-control" name="category" id="menu">
+    <option value="a" selected>-</option>
+  	<option value="videotutorial">videotutorial</option>
+    <option value="other">other</option>
+
+  </select>
+  <select class="form-control" name="" id="submenu"></select>
+
+  <div id="checkboxlist"></div>
+  <div id="checkboxselecteds"></div>
+
+  <input type="text" id="checkboxvalues">
+</div>
+<div id="ajax"></div>
+</body>
+<script type="text/javascript">
+//dom
+  sectionajax = document.getElementById("ajax");
+  menu = document.getElementById('menu');
+  submenu = document.getElementById('submenu');
+  areacheckbox = document.getElementById('checkboxlist');
+  checkboxoutput = document.getElementById("checkboxselecteds");
+// dinamic dom
+  ul = document.createElement("ul");
+// boolean 3
+  submenulista = false;
+  list = false;
+  boton = false;
+  checkboxcreados = false;
+
+  categorie = {'videotutorial':{
+    'subcategoria':{
+      'webdev':["php5", "php7", "javascript puro", "html", "css", "mysql", "oop", "procedural", "jquery", "laravel", "vuejs", "others"],
+
+         'software':[]
+    }  
+},
+    'other':{
+      'subcategorie':{} }
+
+  }
+
+
+menu.addEventListener("change", function(e){
+    var target = e.target
+
+    switch(target.value){
+    	case "other":
+      		option = prompt("in quale categoria/catogorie potrebbe rientrare il tuo video || choose category o categories")
+      			for(var i=0; i<target.length; i++){
+        			if(target.options[i].value == target.value ){
+          			target.options[i].setAttribute("value", option);
+          			target.options[i].innerText = option;
+
+        		  }
+            }
+
+          break;
+    	case "videotutorial":
+        if(!submenulista){
+          var defop = document.createElement('option');
+          defop.setAttribute('value', '#');
+          defop.innerText = "-";
+          submenu.appendChild(defop);
+          for(var categoria in categorie.videotutorial.subcategoria) {
+            console.log(categoria);
+            var op = document.createElement("option");
+            op.setAttribute("value", categoria);
+            op.innerText = categoria;
+            submenu.appendChild(op);
+          }
+          submenulista=true;
+        }
+        break;
+
+    }
+}, false);
+submenu.addEventListener("change", function(e){
+    var target = e.target;
+    console.log(target.value);
+    switch(target.value){
+      case "webdev":
+
+
+      if(checkboxcreados == false){
+        for(var i=0; i<categorie.videotutorial.subcategoria.webdev.length; i++){
+          // dinamic dom
+          let p = document.createElement("p");
+          let op = document.createElement("input");
+          let txt = document.createTextNode(categorie.videotutorial.subcategoria.webdev[i])
+
+          op.setAttribute("type", "checkbox");
+          op.setAttribute("name", categorie.videotutorial.subcategoria.webdev[i]);
+          op.setAttribute("value", categorie.videotutorial.subcategoria.webdev[i])
+          p.appendChild(op);
+          p.appendChild(txt);
+          areacheckbox.appendChild(p);
+        }
+
+        var p = document.createElement("p");
+        let textfield = document.createElement('input');
+        textfield.setAttribute('type', 'text');
+        textfield.setAttribute('placeholder', 'title video here');
+        textfield.style.width = "45em";
+        let p2 = document.createElement('p');
+        p2.appendChild(textfield);
+        areacheckbox.appendChild(p2);
+        let placeholder = document.createTextNode("send");
+        let button = document.createElement("button");
+        button.setAttribute('id', 'submit');
+        //let tag = document.createTextNode("checkboxcheck");
+        //button.setAttribute("onclick", "checknodebox()");
+        button.setAttribute("onclick", "submit()");
+        button.setAttribute("class", "btn btn-primary");
+        button.setAttribute("disabled", true);
+        button.appendChild(placeholder);
+        //button.setAttribute("value", "submit");
+        //button.appendChild(tag);
+        p.appendChild(button);
+        areacheckbox.appendChild(p);
+        checkboxcreados = true;
+      }//endif
+      var p = document.querySelectorAll("p");
+      for(var i=0; i<p.length; i++){
+        p[i].style.display="inline";
+      }
+        break;
+
+        case "software":
+          var p = document.querySelectorAll("p");
+          for(let i=0; i<p.length; i++){
+            p[i].style.display="none";
+          }
+          break;
+    }
+
+  }, false);
+
+
+areacheckbox.addEventListener("change", function(e){
+
+  procedural = document.querySelector("input[value='procedural']");
+  oop = document.querySelector("input[value='oop']");
+  //console.log(procedural);
+
+  var target = e.target;
+  //console.log(target.value);
+  if(procedural.checked && oop.checked){
+
+    console.log(target.value);
+    document.querySelector("#submit").disabled = false;
+
+  }
+  else if(procedural.checked || oop.checked){
+    document.querySelector("#submit").disabled = false;
+
+  }
+  else{
+    document.querySelector("#submit").disabled = true;
+
+
+  }
+
+}, false)
+
+checkbox_selected = [];
+
+function submit(){
+
+  checkboxArray = document.querySelectorAll("input[type='checkbox']");
+
+  for(var i=0; i<checkboxArray.length; i++){
+    if(checkboxArray[i].checked){
+      checkbox_selected.push(checkboxArray[i].value);
+     // console.log(checkboxArray[i].value);
+    }
+  }
+  checkbox_selected = checkbox_selected.toString();
+  titlevideo = document.querySelector("input[placeholder]").value;
+ // console.log(checkbox_selected); Array(3) [ input, input, input ] 
+ console.log(checkbox_selected);
+
+  ajax = new XMLHttpRequest();
+
+
+  ajax.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+    sectionajax.innerHTML = this.responseText;
+    }
+  };
+  ajax.open('POST','procesor.php', true);
+
+ 
+  ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+
+  ajax.send('checkboxvalues='+checkbox_selected+'&'+'titlevideo='+titlevideo);  
+}
+</script>
